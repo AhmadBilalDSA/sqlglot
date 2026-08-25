@@ -11,6 +11,13 @@ class TestDuckDB(Validator):
     dialect = "duckdb"
 
     def test_duckdb(self):
+        self.validate_all("ARRAY_REVERSE([1, 2, 3])", read={"duckdb": "LIST_REVERSE([1, 2, 3])"})
+        self.validate_all(
+            "ARRAY_INDEXOF([1, 2, 3], 2)", read={"duckdb": "LIST_POSITION([1, 2, 3], 2)"}
+        )
+        self.validate_all(
+            "ARRAY_INDEXOF([1, 2, 3], 2)", read={"duckdb": "LIST_INDEXOF([1, 2, 3], 2)"}
+        )
         self.validate_identity("TRUNC(3.14)").assert_is(exp.Trunc)
         self.validate_all(
             "TRUNC(3.14159, 2)",
@@ -1172,7 +1179,6 @@ class TestDuckDB(Validator):
             },
         )
         self.validate_all(
-            "LIST_REVERSE_SORT(x)",
             write={
                 "duckdb": "ARRAY_REVERSE_SORT(x)",
                 "presto": "ARRAY_SORT(x, (a, b) -> CASE WHEN a < b THEN 1 WHEN a > b THEN -1 ELSE 0 END)",
