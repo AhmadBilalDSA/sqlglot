@@ -202,6 +202,10 @@ class DuckDBParser(parser.Parser):
     }
 
     FUNCTION_PARSERS = {
+        "ARRAY_INDEXOF": lambda self: self._parse_position(),
+        "LIST_INDEXOF": lambda self: self._parse_position(),
+        "LIST_POSITION": lambda self: self._parse_position(),
+        "LIST_REVERSE": lambda self: self._parse_reverse(),
         **{k: v for k, v in parser.Parser.FUNCTION_PARSERS.items() if k != "DECODE"},
         **dict.fromkeys(
             ("GROUP_CONCAT", "LISTAGG", "STRINGAGG"), lambda self: self._parse_string_agg()
